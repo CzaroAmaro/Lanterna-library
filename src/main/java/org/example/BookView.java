@@ -20,6 +20,7 @@ public class BookView {
 
         panel.addComponent(new Button("Dodaj książkę", this::addBook));
         panel.addComponent(new Button("Pokaż listę książek", this::showBookList));
+        panel.addComponent(new Button("Usuń książkę", this::removeBook));
         panel.addComponent(new Button("Wyjdź", () -> System.exit(0)));
 
         BasicWindow window = new BasicWindow("Menu Główne");
@@ -92,4 +93,42 @@ public class BookView {
         window.setComponent(panel);
         gui.addWindowAndWait(window);
     }
+
+    //Usuwanie ksiązki
+    private void removeBook() {
+        if (controller.getBooks().isEmpty()) {
+            MessageDialog.showMessageDialog(gui, "Informacja", "Brak książek do usunięcia!");
+            return;
+        }
+
+        Panel panel = new Panel();
+        TextBox indexBox = new TextBox();
+
+        panel.addComponent(new Label("Podaj numer książki do usunięcia (od 1 do " + controller.getBooks().size() + "):"));
+        panel.addComponent(indexBox);
+
+        BasicWindow window = new BasicWindow("Usuń Książkę");
+        panel.addComponent(new Button("Usuń", () -> {
+            try {
+                int index = Integer.parseInt(indexBox.getText()) - 1;
+
+                if (index < 0 || index >= controller.getBooks().size()) {
+                    MessageDialog.showMessageDialog(gui, "Błąd", "Podany numer jest poza zakresem!");
+                    return;
+                }
+
+                // Usunięcie książki
+                controller.removeBook(index);
+                MessageDialog.showMessageDialog(gui, "Sukces", "Książka została usunięta!");
+                window.close();
+            } catch (NumberFormatException e) {
+                MessageDialog.showMessageDialog(gui, "Błąd", "Nieprawidłowy numer! Użyj liczby całkowitej.");
+            }
+        }));
+        panel.addComponent(new Button("Anuluj", window::close));
+        window.setComponent(panel);
+        gui.addWindowAndWait(window);
+    }
+
+
 }

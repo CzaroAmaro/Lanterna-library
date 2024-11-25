@@ -18,6 +18,16 @@ public class BookController {
         return books;
     }
 
+    public void removeBook(int index) {
+        if (index >= 0 && index < books.size()) {
+            books.remove(index);
+        } else {
+            throw new IndexOutOfBoundsException("Indeks poza zakresem: " + index);
+        }
+    }
+
+
+
     public String getBookListAsString() {
         if (books.isEmpty()) {
             return "Brak książek w bazie danych.";
